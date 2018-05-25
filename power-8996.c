@@ -26,6 +26,7 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 #define LOG_NIDEBUG 0
 
 #include <errno.h>
@@ -71,7 +72,7 @@ perf_mode_t perf_modes[NUM_PERF_MODES] = {
 
 static int current_mode = NORMAL_MODE;
 
-static inline  int get_perfd_hint_id(perf_mode_type_t type) {
+static inline int get_perfd_hint_id(perf_mode_type_t type) {
     int i;
     for (i = 0; i < NUM_PERF_MODES; i++) {
         if (perf_modes[i].type == type) {
@@ -84,7 +85,6 @@ static inline  int get_perfd_hint_id(perf_mode_type_t type) {
 }
 
 static int switch_mode(perf_mode_type_t mode) {
-
     int hint_id = 0;
     static int perfd_mode_handle = -1;
 
@@ -108,17 +108,16 @@ static int switch_mode(perf_mode_type_t mode) {
 }
 
 static int process_perf_hint(void *data, perf_mode_type_t mode) {
-
     // enable
-    if (*(int32_t *)data){
+    if (*(int32_t *)data) {
         ALOGI("Enable request for mode: 0x%x", mode);
         // check if mode is current mode
-        if ( current_mode & mode ) {
+        if (current_mode & mode) {
             ALOGD("Mode 0x%x already enabled", mode);
             return HINT_HANDLED;
         }
         // enable requested mode
-        if ( 0 != switch_mode(current_mode | mode)) {
+        if (0 != switch_mode(current_mode | mode)) {
             ALOGE("Couldn't enable mode 0x%x", mode);
             return HINT_NONE;
         }
@@ -128,12 +127,12 @@ static int process_perf_hint(void *data, perf_mode_type_t mode) {
     } else {
         ALOGI("Disable request for mode: 0x%x", mode);
         // check if mode is enabled
-        if ( !(current_mode & mode) ) {
+        if (!(current_mode & mode)) {
             ALOGD("Mode 0x%x already disabled", mode);
             return HINT_HANDLED;
         }
-        //disable requested mode
-        if ( 0 != switch_mode(current_mode & ~mode)) {
+        // disable requested mode
+        if (0 != switch_mode(current_mode & ~mode)) {
             ALOGE("Couldn't disable mode 0x%x", mode);
             return HINT_NONE;
         }
@@ -151,7 +150,6 @@ static int process_video_encode_hint(void *metadata)
 
     if (get_scaling_governor(governor, sizeof(governor)) == -1) {
         ALOGE("Can't obtain scaling governor.");
-
         return HINT_NONE;
     }
 
@@ -209,8 +207,6 @@ static int process_video_encode_hint(void *metadata)
             if (!camera_hint_ref_count) {
                 undo_hint_action(video_encode_metadata.hint_id);
             }
-
-            ALOGI("Video Encode hint stop");
             return HINT_HANDLED;
         }
     }
